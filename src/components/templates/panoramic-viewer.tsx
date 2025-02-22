@@ -83,7 +83,7 @@ const PanoramicViewer: React.FC<PanoramicViewerProps> = ({ imagePath }) => {
     const viewIndicator = new THREE.Mesh(triangleGeometry, triangleMaterial);
     minimapScene.add(viewIndicator);
 
-    // Add OrbitControls
+    // Add OrbitControls with touch support
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -94,6 +94,15 @@ const PanoramicViewer: React.FC<PanoramicViewerProps> = ({ imagePath }) => {
     controls.enablePan = false;
     controls.autoRotate = true;
     controls.autoRotateSpeed = 0.1;
+
+    // Fix touch controls
+    controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_PAN,
+    };
+
+    // Reverse rotation direction for more natural feel
+    controls.rotateSpeed = -0.5; // Negative value to reverse direction
 
     // Handle window resize
     const onWindowResize = (): void => {
@@ -214,7 +223,7 @@ const PanoramicViewer: React.FC<PanoramicViewerProps> = ({ imagePath }) => {
     <>
       <div
         ref={containerRef}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "100%", touchAction: "none" }}
         className="cursor-move"
       />
       <div
